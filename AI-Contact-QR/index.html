@@ -6,46 +6,145 @@
     <title>QR Code Generator for Contact Info</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
     <style>
+        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
-        input, button {
-            margin: 10px 0;
+
+        h1 {
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Form Styling */
+        #contact-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+        }
+
+        #contact-form label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        #contact-form input {
+            width: 100%;
             padding: 10px;
             font-size: 16px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
         }
+
+        #contact-form input[type="url"], #contact-form input[type="tel"] {
+            background-color: #f8f8f8;
+        }
+
+        #contact-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #contact-form button:hover {
+            background-color: #45a049;
+        }
+
+        /* QR Code and Download Button */
         #qr-code {
-            margin-top: 20px;
+            margin-top: 30px;
+            text-align: center;
         }
+
+        #qr-code img {
+            width: 200px;
+            height: 200px;
+            border-radius: 5px;
+        }
+
+        #download {
+            margin-top: 20px;
+            background-color: #007bff;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+            transition: background-color 0.3s ease;
+        }
+
+        #download:hover {
+            background-color: #0056b3;
+        }
+
+        /* Error Message */
+        .error {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 <body>
+
     <h1>Generate Your Contact QR Code</h1>
+
+    <!-- Contact Form -->
     <form id="contact-form">
-        <label for="first-name">First Name:</label><br>
-        <input type="text" id="first-name" required><br>
+        <label for="first-name">First Name:</label>
+        <input type="text" id="first-name" required placeholder="Enter your first name">
 
-        <label for="last-name">Last Name:</label><br>
-        <input type="text" id="last-name" required><br>
+        <label for="last-name">Last Name:</label>
+        <input type="text" id="last-name" required placeholder="Enter your last name">
 
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" required><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required placeholder="Enter your email">
 
-        <label for="phone">Phone (+Country Code):</label><br>
-        <input type="tel" id="phone" pattern="^\+?[1-9]\d{1,14}$" required><br>
+        <label for="phone">Phone (+Country Code):</label>
+        <input type="tel" id="phone" pattern="^\+?[1-9]\d{1,14}$" required placeholder="Enter your phone number">
 
-        <label for="website">Website (optional):</label><br>
-        <input type="url" id="website"><br>
+        <label for="website">Website (optional):</label>
+        <input type="url" id="website" placeholder="Enter your website URL (optional)">
 
         <button type="button" id="generate">Generate QR Code</button>
+        <div id="error-message" class="error"></div>
     </form>
 
+    <!-- QR Code and Download Section -->
     <div id="qr-code"></div>
-    <button id="download" style="display: none;">Download QR Code</button>
+    <button id="download">Download QR Code</button>
 
     <script>
         document.getElementById("generate").addEventListener("click", function () {
+            // Clear any previous error messages
+            document.getElementById("error-message").innerHTML = '';
+
             // Get values from the form
             const firstName = document.getElementById("first-name").value.trim();
             const lastName = document.getElementById("last-name").value.trim();
@@ -55,7 +154,7 @@
 
             // Validate required fields
             if (!firstName || !lastName || !email || !phone) {
-                alert("Please fill in all required fields.");
+                document.getElementById("error-message").innerHTML = "Please fill in all required fields.";
                 return;
             }
 
@@ -94,5 +193,6 @@
             });
         });
     </script>
+
 </body>
 </html>
