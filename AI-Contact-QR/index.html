@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator for Contact Info</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generate Your Contact QR Code</h1>
+    <form id="contact-form">
+        <label for="first-name">First Name:</label><br>
+        <input type="text" id="first-name" required><br>
+
+        <label for="last-name">Last Name:</label><br>
+        <input type="text" id="last-name" required><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" required><br>
+
+        <label for="phone">Phone (+Country Code):</label><br>
+        <input type="tel" id="phone" pattern="^\+?[1-9]\d{1,14}$" required><br>
+
+        <label for="website">Website (optional):</label><br>
+        <input type="url" id="website"><br>
+
+        <button type="button" id="generate">Generate QR Code</button>
+    </form>
+
+    <div id="qr-code"></div>
+    <button id="download" style="display: none;">Download QR Code</button>
+
+    <script>
+        document.getElementById("generate").addEventListener("click", function () {
+            // Get values from the form
+            const firstName = document.getElementById("first-name").value.trim();
+            const lastName = document.getElementById("last-name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const website = document.getElementById("website").value.trim();
+
+            // Validate required fields
+            if (!firstName || !lastName || !email || !phone) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            // Construct the vCard data
+            let vCardData = `BEGIN:VCARD\nVERSION:3.0\n`;
+            vCardData += `FN:${firstName} ${lastName}\n`;
+            vCardData += `EMAIL:${email}\n`;
+            vCardData += `TEL:${phone}\n`;
+            if (website) {
+                vCardData += `URL:${website}\n`;
+            }
+            vCardData += `END:VCARD`;
+
+            // Generate the QR code
+            QRCode.toDataURL(vCardData, { errorCorrectionLevel: 'L' }, function (err, url) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                // Display the QR code
+                const qrCodeContainer = document.getElementById("qr-code");
+                qrCodeContainer.innerHTML = `<img src="${url}" alt="QR Code">`;
+
+                // Show the download button
+                const downloadButton = document.getElementById("download");
+                downloadButton.style.display = "inline-block";
+                
+                // Enable download of the QR code as an image
+                downloadButton.addEventListener("click", function () {
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "contact-qr-code.png";
+                    link.click();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
